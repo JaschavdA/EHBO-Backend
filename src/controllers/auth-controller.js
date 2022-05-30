@@ -24,8 +24,8 @@ let authController = {
                         console.log(error);
                     }
                     if (results.length < 1) {
-                        res.status(404).json({
-                            status: 404,
+                        res.status(400).json({
+                            status: 400,
                             message: "Invalide inloggegevens",
                         });
                     } else {
