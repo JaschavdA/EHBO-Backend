@@ -7,20 +7,25 @@ const assert = require("assert");
 
 let authController = {
     login: (req, res) => {
+        const email = req.body.emailAddress;
         dbconnection.getConnection(function (err, connection) {
             if (err) {
                 console.log(err);
             }
 
             connection.query(
-                "SELECT * FROM user",
+                "SELECT password FROM user WHERE Email = ?",
+                [email],
                 function (error, results, fields) {
                     connection.release;
                     if (error) {
                         console.log(error);
                     }
 
-                    console.log(results);
+                    res.status(200).json({
+                        status: 200,
+                        result: results,
+                    });
                 }
             );
         });
