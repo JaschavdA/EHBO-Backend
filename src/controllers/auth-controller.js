@@ -4,28 +4,57 @@ const jwt = require("jsonwebtoken");
 const dbconnection = require("../../database/dbconnection");
 //TODO: add all inputs
 const assert = require("assert");
+const { use } = require("chai");
 
 let authController = {
     login: (req, res) => {
         const email = req.body.emailAddress;
+        const password = req.body.password;
         dbconnection.getConnection(function (err, connection) {
             if (err) {
                 console.log(err);
             }
 
             connection.query(
-                "SELECT password FROM user WHERE Email = ?",
+                "SELECT ID, Password FROM user WHERE Email = ?",
                 [email],
                 function (error, results, fields) {
                     connection.release;
                     if (error) {
                         console.log(error);
                     }
+                    if (results.length < 1) {
+                        res.status(404).json({
+                            status: 404,
+                            message: "Invalide inloggegevens",
+                        });
+                    } else {
+                        if (results[0].Password === password) {
+                            const userID = results[0].ID;
+                            const payload = { id: userID };
 
-                    res.status(200).json({
-                        status: 200,
-                        result: results,
-                    });
+                            jwt.sign(
+                                payload,
+                                jwtSecretKey,
+                                { expiresIn: "7d" },
+                                function (err, token) {
+                                    if (err) {
+                                        console.log(error);
+                                    }
+
+                                    res.status(200).json({
+                                        statusCode: 200,
+                                        results: token,
+                                    });
+                                }
+                            );
+                        } else {
+                            res.status(404).json({
+                                status: 404,
+                                message: "Invalide inloggegevens",
+                            });
+                        }
+                    }
                 }
             );
         });
@@ -62,18 +91,21 @@ let authController = {
 
         try {
             assert(
-                typeof user.emailAdress === "string",
+                typeof user.emailAddress === "string",
                 "Email must be a string"
             );
             assert(
                 /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
-                    user.emailAdress
+                    user.emailAddress
                 ),
                 "please enter a valid emailAdress"
             );
+            assert(
+                typeof user.password === "string",
+                "password may not be empty"
+            );
             assert(user.password.length > 0, "password may not be empty");
 
-            console.log("made it through");
             next();
         } catch (err) {
             res.status(400).json({
