@@ -18,7 +18,6 @@ let controller = {
     changePassword: (req, res) => {
         const newPassword = req.body.newPassword;
         const id = req.userID;
-        console.log(newPassword);
 
         dbconnection.getConnection(function (err, connection) {
             if (err) {
