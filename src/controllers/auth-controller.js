@@ -5,6 +5,7 @@ const dbconnection = require("../../database/dbconnection");
 //TODO: add all inputs
 const assert = require("assert");
 const { use } = require("chai");
+const bcrypt = require("bcrypt");
 
 let authController = {
     login: (req, res) => {
@@ -29,31 +30,37 @@ let authController = {
                             message: "Invalide inloggegevens",
                         });
                     } else {
-                        if (results[0].Password === password) {
-                            const userID = results[0].ID;
-                            const payload = { id: userID };
+                        bcrypt.compare(
+                            password,
+                            results[0].Password,
+                            function (err, result) {
+                                if (result) {
+                                    const userID = results[0].ID;
+                                    const payload = { id: userID };
 
-                            jwt.sign(
-                                payload,
-                                jwtSecretKey,
-                                { expiresIn: "7d" },
-                                function (err, token) {
-                                    if (err) {
-                                        console.log(error);
-                                    }
+                                    jwt.sign(
+                                        payload,
+                                        jwtSecretKey,
+                                        { expiresIn: "7d" },
+                                        function (err, token) {
+                                            if (err) {
+                                                console.log(error);
+                                            }
 
-                                    res.status(200).json({
-                                        statusCode: 200,
-                                        results: token,
+                                            res.status(200).json({
+                                                statusCode: 200,
+                                                results: token,
+                                            });
+                                        }
+                                    );
+                                } else {
+                                    res.status(404).json({
+                                        status: 404,
+                                        message: "Invalide inloggegevens",
                                     });
                                 }
-                            );
-                        } else {
-                            res.status(404).json({
-                                status: 404,
-                                message: "Invalide inloggegevens",
-                            });
-                        }
+                            }
+                        );
                     }
                 }
             );
