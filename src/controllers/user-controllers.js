@@ -4,6 +4,7 @@ const dbconnection = require("../../database/dbconnection");
 const assert = require("assert");
 const { type } = require("express/lib/response");
 const { doesNotMatch } = require("assert");
+const res = require("express/lib/response");
 
 let controller = {
     passWordRecovery: (req, res) => {
