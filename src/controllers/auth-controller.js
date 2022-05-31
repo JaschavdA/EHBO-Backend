@@ -94,7 +94,7 @@ let authController = {
                 }
                 if (payload) {
                     req.userID = payload.id;
-                    console.log("made it through token auth");
+
                     next();
                 }
             });

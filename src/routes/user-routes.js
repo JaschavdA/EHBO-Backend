@@ -11,6 +11,12 @@ router.put(
     userController.changePassword
 );
 
+router.get(
+    "/api/user/getsignedlessons",
+    authController.validateToken,
+    userController.getSignedLessons
+);
+
 // router.get(
 //     "/api/user",
 //     authController.validateToken,

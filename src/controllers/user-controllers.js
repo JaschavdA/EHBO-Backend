@@ -48,6 +48,41 @@ let controller = {
             });
         });
     },
+
+    //Possible queryparameter is showOldLessons = 1 (true) or 0 (false)
+    getSignedLessons: (req, res) => {
+        const queryParams = req.query;
+        const { hideOldLessons } = queryParams;
+        const id = req.userID;
+
+        let queryString =
+            "SELECT * FROM lesson WHERE LessonID IN (SELECT LessonID FROM user_lesson WHERE UserID = ?)";
+
+        if (hideOldLessons && hideOldLessons == 1) {
+            queryString += "AND DateTime > now()";
+        }
+
+        dbconnection.getConnection(function (err, connection) {
+            if (err) {
+                console.log(err);
+            } else {
+                connection.query(
+                    queryString,
+                    [id],
+                    function (error, results, fields) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                status: 200,
+                                result: results,
+                            });
+                        }
+                    }
+                );
+            }
+        });
+    },
 };
 
 module.exports = controller;
