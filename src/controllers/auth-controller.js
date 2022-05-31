@@ -17,7 +17,7 @@ let authController = {
             }
 
             connection.query(
-                "SELECT ID, Password FROM user WHERE Email = ?",
+                "SELECT ID, Password, IsFirstLogin FROM user WHERE Email = ?",
                 [email],
                 function (error, results, fields) {
                     connection.release;
@@ -34,9 +34,15 @@ let authController = {
                             password,
                             results[0].Password,
                             function (err, result) {
+                                if (err) {
+                                    console.log(err);
+                                }
                                 if (result) {
                                     const userID = results[0].ID;
                                     const payload = { id: userID };
+                                    const isFirstLogin =
+                                        results[0].IsFirstLogin[0];
+                                    console.log(isFirstLogin);
 
                                     jwt.sign(
                                         payload,
@@ -50,12 +56,13 @@ let authController = {
                                             res.status(200).json({
                                                 statusCode: 200,
                                                 results: token,
+                                                IsFirstLogin: isFirstLogin,
                                             });
                                         }
                                     );
                                 } else {
-                                    res.status(404).json({
-                                        status: 404,
+                                    res.status(400).json({
+                                        status: 400,
                                         message: "Invalide inloggegevens",
                                     });
                                 }
@@ -105,7 +112,7 @@ let authController = {
                 /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
                     user.emailAddress
                 ),
-                "please enter a valid emailAdress"
+                "please enter a valid emailAddress"
             );
             assert(
                 typeof user.password === "string",
