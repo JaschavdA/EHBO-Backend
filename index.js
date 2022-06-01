@@ -9,11 +9,13 @@ const bodyParser = require("body-parser");
 const userRouter = require("./src/routes/user-routes");
 const authRouter = require("./src/routes/auth-routes");
 const lessonRouter = require("./src/routes/lesson-routes");
+const competencyRouter = require("./src/routes/competency-routes");
 const res = require("express/lib/response");
 app.use(bodyParser.json());
 app.use(authRouter);
 app.use(userRouter);
 app.use(lessonRouter);
+app.use(competencyRouter);
 
 app.all("*", (req, res) => {
     const method = req.method;

@@ -83,6 +83,8 @@ let controller = {
             }
         });
     },
+
+    getAchievedCompetencies: (req, res) => {},
 };
 
 module.exports = controller;
