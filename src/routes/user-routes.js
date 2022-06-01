@@ -5,6 +5,24 @@ const authController = require("../controllers/auth-controller");
 
 // router.post("/api/user", userController.validateUser, userController.addUser);
 
+router.put(
+    "/api/user/updatepassword",
+    authController.validateToken,
+    userController.changePassword
+);
+
+router.get(
+    "/api/user/getsignedlessons",
+    authController.validateToken,
+    userController.getSignedLessons
+);
+
+router.get(
+    "/api/user/getobtainedcompetencies",
+    authController.validateToken,
+    userController.getAchievedCompetencies
+);
+
 // router.get(
 //     "/api/user",
 //     authController.validateToken,

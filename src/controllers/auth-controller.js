@@ -5,6 +5,7 @@ const dbconnection = require("../../database/dbconnection");
 //TODO: add all inputs
 const assert = require("assert");
 const { use } = require("chai");
+const bcrypt = require("bcrypt");
 
 let authController = {
     login: (req, res) => {
@@ -16,7 +17,7 @@ let authController = {
             }
 
             connection.query(
-                "SELECT ID, Password FROM user WHERE Email = ?",
+                "SELECT ID, Password, IsFirstLogin FROM user WHERE Email = ?",
                 [email],
                 function (error, results, fields) {
                     connection.release;
@@ -29,31 +30,44 @@ let authController = {
                             message: "Invalide inloggegevens",
                         });
                     } else {
-                        if (results[0].Password === password) {
-                            const userID = results[0].ID;
-                            const payload = { id: userID };
+                        bcrypt.compare(
+                            password,
+                            results[0].Password,
+                            function (err, result) {
+                                if (err) {
+                                    console.log(err);
+                                }
+                                if (result) {
+                                    const userID = results[0].ID;
+                                    const payload = { id: userID };
+                                    const isFirstLogin =
+                                        results[0].IsFirstLogin[0];
+                                    console.log(isFirstLogin);
 
-                            jwt.sign(
-                                payload,
-                                jwtSecretKey,
-                                { expiresIn: "7d" },
-                                function (err, token) {
-                                    if (err) {
-                                        console.log(error);
-                                    }
+                                    jwt.sign(
+                                        payload,
+                                        jwtSecretKey,
+                                        { expiresIn: "7d" },
+                                        function (err, token) {
+                                            if (err) {
+                                                console.log(error);
+                                            }
 
-                                    res.status(200).json({
-                                        statusCode: 200,
-                                        results: token,
+                                            res.status(200).json({
+                                                statusCode: 200,
+                                                results: token,
+                                                IsFirstLogin: isFirstLogin,
+                                            });
+                                        }
+                                    );
+                                } else {
+                                    res.status(400).json({
+                                        status: 400,
+                                        message: "Invalide inloggegevens",
                                     });
                                 }
-                            );
-                        } else {
-                            res.status(404).json({
-                                status: 404,
-                                message: "Invalide inloggegevens",
-                            });
-                        }
+                            }
+                        );
                     }
                 }
             );
@@ -80,6 +94,7 @@ let authController = {
                 }
                 if (payload) {
                     req.userID = payload.id;
+
                     next();
                 }
             });
@@ -98,7 +113,7 @@ let authController = {
                 /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
                     user.emailAddress
                 ),
-                "please enter a valid emailAdress"
+                "please enter a valid emailAddress"
             );
             assert(
                 typeof user.password === "string",
