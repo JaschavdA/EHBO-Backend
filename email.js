@@ -5,8 +5,8 @@ var transporter = nodemailer.createTransport({
     host: "smtp-mail.outlook.com",
     port: 587,
     auth: {
-        user: "HIER EMAIL TOEVOEGEN",
-        pass: "HIER WACHTWOORD TOEVOEGEN",
+        user: "ehbosmtptest2022@outlook.com",
+        pass: "EHBOtest-mail",
     },
 });
 
@@ -17,8 +17,8 @@ var password = generator.generate({
 });
 
 var mailOptions = {
-    from: "Email",
-    to: "Email",
+    from: "ehbosmtptest2022@outlook.com",
+    to: "jem.vanderark@student.avans.nl",
     subject: "Email verzenden met NodeJS",
     text: `Eenmaalig wachtwoord: ${password}`,
 };
