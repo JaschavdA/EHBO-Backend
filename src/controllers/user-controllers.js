@@ -1,5 +1,7 @@
 const req = require("express/lib/request");
+const bcrypt = require("bcrypt");
 const dbconnection = require("../../database/dbconnection");
+const generator = require("generate-password");
 //TODO: add all inputs
 const assert = require("assert");
 const { type } = require("express/lib/response");
@@ -7,9 +9,97 @@ const { doesNotMatch } = require("assert");
 const res = require("express/lib/response");
 const { rmSync } = require("fs");
 const saltRounds = 10;
-const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
 
-let controller = {
+let userController = {
+    createUser(req, res) {
+        var transporter = nodemailer.createTransport({
+            host: "smtp-mail.outlook.com",
+            port: 587,
+            auth: {
+                user: "ehbosmtptest2022@outlook.com",
+                pass: "EHBOtest-mail",
+            },
+        });
+
+        const name = req.body.name;
+        const email = req.body.emailAddress;
+        const password = generator.generate({
+            length: 10,
+            numbers: true,
+        });
+
+        dbconnection.getConnection(function (err, connection) {
+            if (err) {
+                console.log(err);
+            } else {
+                bcrypt.hash(password, 10, function (error, hash) {
+                    connection.query(
+                        "INSERT INTO user (name, email, password) VALUES(?, ? , ?)",
+                        [name, email, hash],
+                        function (queryError, results, fields) {
+                            if (queryError) {
+                                console.log("Create user aborted");
+                                res.status(400).json({
+                                    status: 400,
+                                    message: "this user already exists",
+                                });
+                            } else {
+                                console.log("made it here");
+                                var mailOptions = {
+                                    from: "ehbosmtptest2022@outlook.com",
+                                    to: email,
+                                    subject: "eenmaalig wachtwoord EHBO",
+                                    text: `Eenmaalig wachtwoord: ${password}`,
+                                };
+
+                                transporter.sendMail(
+                                    mailOptions,
+                                    function (error, info) {
+                                        if (error) {
+                                            console.log(error);
+                                        } else {
+                                            console.log(
+                                                "Email sent: " + info.response
+                                            );
+                                        }
+                                    }
+                                );
+
+                                res.status(200).json({
+                                    status: 200,
+                                    request: "Create user",
+                                });
+                            }
+                        }
+                    );
+                });
+            }
+        });
+    },
+    validateUser(req, res, next) {
+        user = req.body;
+
+        try {
+            assert(
+                typeof user.emailAddress === "string",
+                "Email must be a string"
+            );
+            assert(
+                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+                    user.emailAddress
+                ),
+                "please enter a valid emailAdress"
+            );
+
+            next();
+        } catch (err) {
+            res.status(400).json({
+                status: 400,
+                message: err.message,
+            });
+        }
+    },
     passWordRecovery: (req, res) => {
         const email = req.body.emailAddress;
     },
@@ -115,4 +205,4 @@ let controller = {
     },
 };
 
-module.exports = controller;
+module.exports = userController;

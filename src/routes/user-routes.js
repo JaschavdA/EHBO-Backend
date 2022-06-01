@@ -48,6 +48,13 @@ router.get(
 //     userController.updateUser
 // );
 
+	router.post(
+		"/api/user/",
+	//     authController.validateToken,
+		userController.validateUser,
+		userController.createUser
+	);
+
 // router.delete(
 //     "/api/user/:userID",
 //     authController.validateToken,
