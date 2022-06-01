@@ -17,6 +17,12 @@ router.get(
     userController.getSignedLessons
 );
 
+router.get(
+    "/api/user/getobtainedcompetencies",
+    authController.validateToken,
+    userController.getAchievedCompetencies
+);
+
 // router.get(
 //     "/api/user",
 //     authController.validateToken,
