@@ -11,7 +11,7 @@ const authRouter = require("./src/routes/auth-routes");
 const res = require("express/lib/response");
 app.use(bodyParser.json());
 app.use(authRouter);
-// app.use(userRouter);
+app.use(userRouter);
 
 app.all("*", (req, res) => {
     const method = req.method;
