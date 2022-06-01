@@ -20,6 +20,7 @@ let lessonController = {
             connection.query(
                 "SELECT * FROM lesson;",
                 function (error, results, fields) {
+                    connection.release();
                     if (error) {
                         console.log(error);
                         res.status(500).json({
@@ -51,6 +52,7 @@ let lessonController = {
                 "SELECT * FROM lesson WHERE LessonID = ?;",
                 [id],
                 function (error, results, fields) {
+                    connection.release();
                     if (error) {
                         console.log(error);
                         res.status(500).json({

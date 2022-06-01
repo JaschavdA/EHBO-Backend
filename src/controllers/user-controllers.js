@@ -32,6 +32,7 @@ let controller = {
                     "UPDATE user SET Password = ?, IsFirstLogin = 0 where ID = ?",
                     [hash, id],
                     function (error, results, fields) {
+                        connection.release();
                         if (error) {
                             res.status(503).json({
                                 status: 503,
@@ -70,6 +71,7 @@ let controller = {
                     queryString,
                     [id],
                     function (error, results, fields) {
+                        connection.release();
                         if (error) {
                             console.log(error);
                         } else {
@@ -94,6 +96,7 @@ let controller = {
                     "SELECT diploma_competency.CompetencyID, competency.Name, competency.Description, diploma_competency.DateObtained FROM diploma_competency JOIN competency ON diploma_competency.CompetencyID = competency.ID WHERE UserID = ?;",
                     [id],
                     function (error, results, fields) {
+                        connection.release();
                         if (error) {
                             res.status(500).json({
                                 status: 500,

@@ -22,6 +22,7 @@ let competencyController = {
                 connection.query(
                     "SELECT * FROM competency",
                     function (error, results, fields) {
+                        connection.release();
                         if (error) {
                             res.status(500).json({
                                 status: 500,
@@ -53,6 +54,7 @@ let competencyController = {
                     "SELECT * FROM competency WHERE ID = ?",
                     [id],
                     function (error, results, fields) {
+                        connection.release();
                         if (error) {
                             console.log(error);
                             res.status(500).json({
