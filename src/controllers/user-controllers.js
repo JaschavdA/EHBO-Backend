@@ -9,7 +9,6 @@ const { doesNotMatch } = require("assert");
 const res = require("express/lib/response");
 const { rmSync } = require("fs");
 const saltRounds = 10;
-const bcrypt = require("bcrypt");
 
 let userController = {
 	createUser(req, res){
