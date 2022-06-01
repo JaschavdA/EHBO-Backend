@@ -23,12 +23,12 @@ DROP TABLE IF EXISTS `competency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `competency` (
-  `ID` int(11) NOT NULL,
-  `Name` int(11) NOT NULL,
-  `Description` int(11) NOT NULL,
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Description` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `AK_Name` (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,6 +37,7 @@ CREATE TABLE `competency` (
 
 LOCK TABLES `competency` WRITE;
 /*!40000 ALTER TABLE `competency` DISABLE KEYS */;
+INSERT INTO `competency` VALUES (1,'WO 130','Brandwonden'),(2,'PP 1','Pleisters plakken');
 /*!40000 ALTER TABLE `competency` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,6 +64,7 @@ CREATE TABLE `competency_lesson` (
 
 LOCK TABLES `competency_lesson` WRITE;
 /*!40000 ALTER TABLE `competency_lesson` DISABLE KEYS */;
+INSERT INTO `competency_lesson` VALUES (1,3);
 /*!40000 ALTER TABLE `competency_lesson` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,6 +89,7 @@ CREATE TABLE `diploma` (
 
 LOCK TABLES `diploma` WRITE;
 /*!40000 ALTER TABLE `diploma` DISABLE KEYS */;
+INSERT INTO `diploma` VALUES (1,'2024-05-31');
 /*!40000 ALTER TABLE `diploma` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,8 +106,8 @@ CREATE TABLE `diploma_competency` (
   `DateObtained` date NOT NULL,
   PRIMARY KEY (`CompetencyID`,`UserID`),
   KEY `UserID` (`UserID`),
-  CONSTRAINT `diploma_competency_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `diploma` (`UserID`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `diploma_competency_ibfk_2` FOREIGN KEY (`CompetencyID`) REFERENCES `competency` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `diploma_competency_ibfk_2` FOREIGN KEY (`CompetencyID`) REFERENCES `competency` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `diploma_competency_ibfk_3` FOREIGN KEY (`UserID`) REFERENCES `user` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -114,6 +117,7 @@ CREATE TABLE `diploma_competency` (
 
 LOCK TABLES `diploma_competency` WRITE;
 /*!40000 ALTER TABLE `diploma_competency` DISABLE KEYS */;
+INSERT INTO `diploma_competency` VALUES (1,1,'2022-05-31');
 /*!40000 ALTER TABLE `diploma_competency` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,7 +144,7 @@ CREATE TABLE `instructor_lesson` (
 
 LOCK TABLES `instructor_lesson` WRITE;
 /*!40000 ALTER TABLE `instructor_lesson` DISABLE KEYS */;
-INSERT INTO `instructor_lesson` VALUES (4,2);
+INSERT INTO `instructor_lesson` VALUES (4,1),(4,2),(4,3);
 /*!40000 ALTER TABLE `instructor_lesson` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -157,7 +161,7 @@ CREATE TABLE `lesson` (
   `DateTime` datetime NOT NULL,
   `Description` varchar(255) NOT NULL,
   PRIMARY KEY (`LessonID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,7 +170,7 @@ CREATE TABLE `lesson` (
 
 LOCK TABLES `lesson` WRITE;
 /*!40000 ALTER TABLE `lesson` DISABLE KEYS */;
-INSERT INTO `lesson` VALUES (1,'Pleisters plakken','2022-05-31 21:15:31','dit is een test les'),(2,'Reanimatie les','2022-05-31 21:17:20','Dit is ook een test les');
+INSERT INTO `lesson` VALUES (1,'Pleisters plakken','2022-05-31 21:15:31','dit is een test les'),(2,'Reanimatie les','2022-05-31 21:17:20','Dit is ook een test les'),(3,'Wonden Brandwonden','2023-05-31 19:15:31','nog een test les');
 /*!40000 ALTER TABLE `lesson` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -325,6 +329,7 @@ CREATE TABLE `user_lesson` (
 
 LOCK TABLES `user_lesson` WRITE;
 /*!40000 ALTER TABLE `user_lesson` DISABLE KEYS */;
+INSERT INTO `user_lesson` VALUES (1,1),(1,3);
 /*!40000 ALTER TABLE `user_lesson` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -363,4 +368,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-31 22:10:22
+-- Dump completed on 2022-06-01 10:21:49
