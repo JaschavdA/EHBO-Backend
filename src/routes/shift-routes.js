@@ -17,4 +17,16 @@ router.post(
     shiftController.signUpShift
 );
 
+router.get(
+    "/api/shift",
+    authController.validateToken,
+    shiftController.getAllShifts
+);
+
+router.get(
+    "/api/shift/:shiftID",
+    authController.validateToken,
+    shiftController.getShiftByID
+);
+
 module.exports = router;

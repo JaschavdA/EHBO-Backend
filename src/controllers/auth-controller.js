@@ -20,7 +20,7 @@ let authController = {
                 "SELECT ID, Password, IsFirstLogin FROM user WHERE Email = ?",
                 [email],
                 function (error, results, fields) {
-                    connection.release;
+                    connection.release();
                     if (error) {
                         console.log(error);
                     }
@@ -53,9 +53,16 @@ let authController = {
                                                 console.log(error);
                                             }
 
+                                            const user_id = results[0].ID;
+
+                                            resultJson = {
+                                                token: token,
+                                                user_id: user_id,
+                                            };
+
                                             res.status(200).json({
                                                 statusCode: 200,
-                                                results: token,
+                                                results: resultJson,
                                                 IsFirstLogin: isFirstLogin,
                                             });
                                         }

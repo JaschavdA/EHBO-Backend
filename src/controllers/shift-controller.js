@@ -123,6 +123,51 @@ let shiftController = {
             }
         });
     },
+
+    getAllShifts: (req, res) => {
+        dbconnection.getConnection(function (err, connection) {
+            if (err) {
+                console.log(err);
+            } else
+                connection.query(
+                    "SELECT * FROM shift",
+                    function (error, results, fields) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                status: 200,
+                                result: results,
+                            });
+                        }
+                    }
+                );
+        });
+    },
+
+    getShiftByID: (req, res) => {
+        const id = req.params.shiftID;
+
+        dbconnection.getConnection(function (err, connection) {
+            if (err) {
+                console.log(err);
+            } else
+                connection.query(
+                    "SELECT * FROM shift WHERE ShiftID = ?",
+                    [id],
+                    function (error, results, fields) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            res.status(200).json({
+                                status: 200,
+                                result: results,
+                            });
+                        }
+                    }
+                );
+        });
+    },
 };
 
 module.exports = shiftController;

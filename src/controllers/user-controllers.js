@@ -203,6 +203,8 @@ let userController = {
             }
         });
     },
+
+    getSignedShifts: (req, res) => {},
 };
 
 module.exports = userController;
